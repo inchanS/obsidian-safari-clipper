@@ -12,13 +12,14 @@ Promise.all([
     /* Optional tags  */
     const tags = "clippings";
 
+    let html = "";
+
     function getSelectionHtml() {
-        var html = "";
         if (typeof window.getSelection != "undefined") {
-            var sel = window.getSelection();
+            let sel = window.getSelection();
             if (sel.rangeCount) {
-                var container = document.createElement("div");
-                for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+                let container = document.createElement("div");
+                for (let i = 0, len = sel.rangeCount; i < len; ++i) {
                     container.appendChild(sel.getRangeAt(i).cloneContents());
                 }
                 html = container.innerHTML;
@@ -35,32 +36,29 @@ Promise.all([
 
     const {title, byline, content} = new Readability(document.cloneNode(true)).parse();
 
-    function getFileName(fileName) {
-        var userAgent = window.navigator.userAgent,
-            platform = window.navigator.platform,
-            windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+    function getSanitizedFileName(fileName) {
+        // Windows에서 파일명으로 사용할 수 없는 문자들: / \ ? % * : | " < >
+        // 이 문자들을 모두 찾아 하이픈(-)으로 변경하는 정규식
+        const illegalCharsRegex = /[\/\?%*:|"<>\\]/g;
 
-        if (windowsPlatforms.indexOf(platform) !== -1) {
-            fileName = fileName.replace(':', '').replace(/[/\\?%*|"<>]/g, '-');
-        } else {
-            fileName = fileName.replace(':', '').replace(/\//g, '-').replace(/\\/g, '-');
-        }
-        return fileName;
+        // 정규식을 사용하여 모든 금지 문자를 '-'로 한 번에 치환
+        return fileName.replace(illegalCharsRegex, '-');
     }
 
-    const fileName = getFileName(title);
+    const fileName = getSanitizedFileName(title);
 
-    var markdownify;
+    let markdownify;
     if (selection) {
         markdownify = selection;
     } else {
         markdownify = content;
     }
 
+    let vaultName;
     if (vault) {
-        var vaultName = '&vault=' + encodeURIComponent(`${vault}`);
+        vaultName = '&vault=' + encodeURIComponent(`${vault}`);
     } else {
-        var vaultName = '';
+        vaultName = '';
     }
 
     const markdownBody = new Turndown({
@@ -71,16 +69,16 @@ Promise.all([
         emDelimiter: '*',
     }).turndown(markdownify);
 
-    var date = new Date();
+    let date = new Date();
 
     function convertDate(date) {
-        var yyyy = date.getFullYear().toString();
-        var mm = (date.getMonth() + 1).toString();
-        var dd = date.getDate().toString();
-        var hours = date.getHours().toString().padStart(2, '0');
-        var minutes = date.getMinutes().toString().padStart(2, '0');
-        var mmChars = mm.split('');
-        var ddChars = dd.split('');
+        let yyyy = date.getFullYear().toString();
+        let mm = (date.getMonth() + 1).toString();
+        let dd = date.getDate().toString();
+        let hours = date.getHours().toString().padStart(2, '0');
+        let minutes = date.getMinutes().toString().padStart(2, '0');
+        let mmChars = mm.split('');
+        let ddChars = dd.split('');
         return yyyy + "-" + (mmChars[1] ? mm : "0" + mmChars[0]) + "-" + (ddChars[1] ? dd : "0" + ddChars[0]) + "T" + hours + ":" + minutes;
     }
 
@@ -90,7 +88,7 @@ Promise.all([
         "---" + "\n"
         + "date : " + today + "  \n"
         + "lastmod : \n"
-        + "title : " + title + "  \n"
+        + "title : " + fileName + "  \n"
         + "tags : " + tags + "\n\n"
         + "aliases : \n"
         + "---" + "\n"
