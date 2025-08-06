@@ -88,13 +88,13 @@
         const fileContent =
             "---" + "\n"
             + "date : " + today + "  \n"
-            + "lastmode : " + today + "  \n"
+            + "lastmod : \n"
             + "title : " + title + "  \n"
             + "tags : " + tags + "\n\n"
             + "aliases : \n"
             + "---" + "\n"
             + "- tagLinks:: \n"
-            + "- related links \n"
+            + "- related links:: \n"
             + "- source: [" + title + "](" + document.URL + ")  \n"
             + "---  " + "\n"
             + markdownBody ;
