@@ -1,5 +1,8 @@
 ## Obsidian-Safari-Clipper
 
+* update 2026-11-10 Tue 18:09
+  * [Obsidian Web Clipper](https://obsidian.md/clipper) 공식 도구가 지원됨에 따라 현재 프로젝트는 아카이브 처리
+
 Safari 브라우저에서 현재 웹사이트를 Markdown 형식으로 변환하여 Obsidian Vault에 저장하는 Alfred 워크플로우  
 
 ![Obsidian 웹 클리핑 도구](obsidian-clipping.webp)
